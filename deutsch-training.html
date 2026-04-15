@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeutschOhr – Täglich besser zuhören</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal: #6EEDE1;
+    --teal-dark: #1ABCB0;
+    --teal-deep: #0A7A72;
+    --black: #0D0D0D;
+    --off-white: #F5F4F0;
+    --gray-light: #E8E7E2;
+    --gray-mid: #9A9890;
+    --white: #FFFFFF;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--white); color: var(--black); font-size: 16px; line-height: 1.7; }
+
+  /* ── LANG BAR ── */
+  .lang-bar {
+    display: flex; justify-content: flex-end; align-items: center;
+    padding: 0.45rem 5vw; background: var(--off-white);
+    border-bottom: 1px solid var(--gray-light); gap: 0.3rem;
+  }
+  .lang-label { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gray-mid); margin-right: 0.6rem; }
+  .lang-btn {
+    font-size: 0.78rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 0.3rem 0.75rem; border: 1px solid var(--gray-light); border-radius: 2px;
+    background: none; cursor: pointer; color: var(--gray-mid); font-family: 'DM Sans', sans-serif;
+    transition: all 0.15s;
+  }
+  .lang-btn:hover { border-color: var(--teal-dark); color: var(--teal-dark); }
+  .lang-btn.active { background: var(--black); color: var(--white); border-color: var(--black); }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 5vw; background: var(--white); border-bottom: 1px solid var(--gray-light);
+  }
+  .logo { font-family: 'DM Serif Display', serif; font-size: 1.5rem; letter-spacing: -0.02em; }
+  .logo span { color: var(--teal-dark); }
+  nav ul { list-style: none; display: flex; gap: 2.5rem; }
+  nav ul li a { text-decoration: none; color: var(--black); font-size: 0.88rem; font-weight: 400; letter-spacing: 0.04em; transition: color 0.2s; }
+  nav ul li a:hover { color: var(--teal-dark); }
+  .nav-cta { background: var(--teal); color: var(--black) !important; padding: 0.5rem 1.2rem; border-radius: 2px; font-weight: 500 !important; }
+  .nav-cta:hover { background: var(--teal-dark); color: var(--white) !important; }
+
+  /* ── HERO ── */
+  .hero { display: grid; grid-template-columns: 1fr 1fr; min-height: 88vh; align-items: center; }
+  .hero-text { padding: 5vw 4vw 5vw 5vw; border-right: 1px solid var(--gray-light); }
+  .hero-eyebrow { font-size: 0.78rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--teal-dark); font-weight: 500; margin-bottom: 1.5rem; }
+  h1 { font-family: 'DM Serif Display', serif; font-size: clamp(2.8rem, 5vw, 4.5rem); line-height: 1.05; letter-spacing: -0.03em; margin-bottom: 1.5rem; }
+  h1 em { font-style: italic; color: var(--teal-dark); }
+  .hero-sub { font-size: 1.05rem; color: #444; max-width: 480px; margin-bottom: 2.5rem; line-height: 1.8; }
+  .hero-actions { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+  .btn-primary { background: var(--black); color: var(--white); padding: 0.85rem 2rem; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 500; letter-spacing: 0.04em; text-decoration: none; display: inline-block; transition: background 0.2s; border-radius: 2px; }
+  .btn-primary:hover { background: var(--teal-deep); }
+  .btn-ghost { color: var(--black); font-size: 0.88rem; text-decoration: underline; cursor: pointer; background: none; border: none; font-family: 'DM Sans', sans-serif; letter-spacing: 0.02em; }
+  .hero-visual { padding: 4vw; display: flex; flex-direction: column; gap: 1.5rem; background: var(--off-white); height: 100%; justify-content: center; }
+  .time-badge { display: inline-flex; align-items: center; gap: 0.6rem; background: var(--teal); color: var(--black); padding: 0.5rem 1rem; border-radius: 2px; font-size: 0.82rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; width: fit-content; }
+  .time-badge .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--black); animation: pulse 1.8s ease-in-out infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.8); } }
+  .session-card { background: var(--white); border: 1px solid var(--gray-light); border-radius: 4px; padding: 1.5rem; }
+  .session-card .session-time { font-family: 'DM Serif Display', serif; font-size: 2.8rem; line-height: 1; letter-spacing: -0.04em; margin-bottom: 0.3rem; }
+  .session-card .session-label { font-size: 0.8rem; color: var(--gray-mid); letter-spacing: 0.1em; text-transform: uppercase; }
+  .session-card .session-days { margin-top: 1rem; display: flex; gap: 0.4rem; }
+  .day-chip { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.06em; padding: 0.25rem 0.6rem; border: 1px solid var(--black); border-radius: 2px; text-transform: uppercase; }
+  .day-chip.active { background: var(--black); color: var(--white); }
+  .devices-row { display: flex; gap: 0.8rem; align-items: center; }
+  .device-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: #555; }
+  .device-icon { width: 28px; height: 28px; background: var(--gray-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+
+  /* ── MARQUEE ── */
+  .marquee-strip { background: var(--black); color: var(--white); overflow: hidden; padding: 0.75rem 0; border-bottom: 1px solid #222; }
+  .marquee-inner { display: flex; animation: marquee 22s linear infinite; white-space: nowrap; }
+  .marquee-inner span { font-size: 0.78rem; letter-spacing: 0.15em; text-transform: uppercase; margin-right: 4rem; }
+  .marquee-inner span.teal { color: var(--teal); }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* ── SECTIONS ── */
+  section { padding: 6rem 5vw; }
+  .section-label { font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--teal-dark); font-weight: 500; margin-bottom: 1rem; }
+  h2 { font-family: 'DM Serif Display', serif; font-size: clamp(2rem, 3.5vw, 3rem); line-height: 1.1; letter-spacing: -0.025em; margin-bottom: 1.5rem; }
+  h2 em { font-style: italic; color: var(--teal-dark); }
+
+  /* ── HOW ── */
+  .how-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 1px solid var(--gray-light); margin-top: 3rem; border-radius: 4px; overflow: hidden; }
+  .how-item { padding: 2.5rem 2rem; border-right: 1px solid var(--gray-light); }
+  .how-item:last-child { border-right: none; }
+  .how-num { font-family: 'DM Serif Display', serif; font-size: 3rem; color: var(--teal); line-height: 1; margin-bottom: 1rem; }
+  .how-item h3 { font-weight: 500; font-size: 1rem; margin-bottom: 0.6rem; }
+  .how-item p { font-size: 0.88rem; color: #555; line-height: 1.7; }
+
+  /* ── CALENDAR ── */
+  #buchen { background: var(--off-white); }
+  .calendar-layout { display: grid; grid-template-columns: 1fr 380px; gap: 3rem; margin-top: 3rem; align-items: start; }
+  .cal-wrapper { background: var(--white); border: 1px solid var(--gray-light); border-radius: 4px; overflow: hidden; }
+  .cal-header { display: flex; align-items: center; justify-content: space-between; padding: 1.2rem 1.5rem; border-bottom: 1px solid var(--gray-light); }
+  .cal-nav-btn { background: none; border: 1px solid var(--gray-light); width: 34px; height: 34px; cursor: pointer; border-radius: 2px; font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
+  .cal-nav-btn:hover { background: var(--gray-light); }
+  .cal-month-label { font-family: 'DM Serif Display', serif; font-size: 1.2rem; }
+  .cal-grid { padding: 1.2rem 1.5rem 1.5rem; }
+  .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); margin-bottom: 0.5rem; }
+  .cal-weekdays span { text-align: center; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray-mid); padding: 0.3rem 0; }
+  .cal-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+  .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; border-radius: 2px; cursor: default; transition: all 0.15s; position: relative; }
+  .cal-day.available { cursor: pointer; font-weight: 500; }
+  .cal-day.available:hover { background: var(--teal); color: var(--black); }
+  .cal-day.weekend { color: var(--gray-mid); font-weight: 300; }
+  .cal-day.selected { background: var(--black); color: var(--white); }
+  .cal-day.today::after { content: ''; position: absolute; bottom: 3px; width: 4px; height: 4px; border-radius: 50%; background: var(--teal-dark); }
+  .cal-day.past { color: var(--gray-light); }
+  .timeslots { margin-top: 1rem; background: var(--white); border: 1px solid var(--gray-light); border-radius: 4px; overflow: hidden; }
+  .timeslots-header { padding: 1rem 1.5rem; border-bottom: 1px solid var(--gray-light); font-size: 0.82rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--gray-mid); }
+  .slot-item { display: flex; align-items: center; justify-content: space-between; padding: 0.9rem 1.5rem; border-bottom: 1px solid var(--gray-light); cursor: pointer; transition: background 0.15s; }
+  .slot-item:last-child { border-bottom: none; }
+  .slot-item:hover { background: var(--off-white); }
+  .slot-item.selected-slot { background: var(--teal); }
+  .slot-time { font-weight: 500; font-size: 0.9rem; }
+  .slot-duration { font-size: 0.78rem; color: var(--gray-mid); }
+  .slot-price { font-weight: 500; font-size: 0.9rem; }
+  .booking-sidebar { position: sticky; top: 90px; }
+  .booking-box { background: var(--white); border: 1px solid var(--gray-light); border-radius: 4px; padding: 2rem; }
+  .booking-box h3 { font-family: 'DM Serif Display', serif; font-size: 1.4rem; margin-bottom: 1.5rem; }
+  .booking-summary { border-top: 1px solid var(--gray-light); padding-top: 1rem; margin-bottom: 1.5rem; }
+  .booking-row { display: flex; justify-content: space-between; font-size: 0.88rem; padding: 0.4rem 0; }
+  .booking-row .label { color: var(--gray-mid); }
+  .booking-row.total { border-top: 1px solid var(--gray-light); margin-top: 0.5rem; padding-top: 0.8rem; font-weight: 500; font-size: 0.95rem; }
+  .booking-placeholder { text-align: center; padding: 1rem 0; color: var(--gray-mid); font-size: 0.88rem; }
+  .booking-placeholder .arrow { font-size: 1.5rem; margin-bottom: 0.5rem; opacity: 0.3; }
+  .packages-row { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.5rem; }
+  .pkg-option { display: flex; align-items: center; gap: 0.8rem; border: 1px solid var(--gray-light); padding: 0.8rem 1rem; border-radius: 2px; cursor: pointer; transition: all 0.15s; }
+  .pkg-option:hover { border-color: var(--teal-dark); }
+  .pkg-option.selected { border-color: var(--black); background: #fafafa; }
+  .pkg-option input[type="radio"] { accent-color: var(--black); }
+  .pkg-label { flex: 1; font-size: 0.88rem; }
+  .pkg-price { font-weight: 500; font-size: 0.88rem; }
+  .pkg-badge { font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; background: var(--teal); color: var(--black); padding: 0.15rem 0.4rem; border-radius: 2px; font-weight: 500; }
+
+  /* ── PRICING ── */
+  .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--gray-light); border: 1px solid var(--gray-light); border-radius: 4px; overflow: hidden; margin-top: 3rem; }
+  .price-card { background: var(--white); padding: 2.5rem 2rem; position: relative; }
+  .price-card.featured { background: var(--black); color: var(--white); }
+  .price-tag { font-family: 'DM Serif Display', serif; font-size: 2.8rem; letter-spacing: -0.04em; line-height: 1; margin: 1rem 0 0.3rem; }
+  .price-period { font-size: 0.78rem; color: var(--gray-mid); letter-spacing: 0.08em; }
+  .price-card.featured .price-period { color: #888; }
+  .price-name { font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 500; color: var(--teal-dark); margin-bottom: 0.3rem; }
+  .price-card.featured .price-name { color: var(--teal); }
+  .price-desc { font-size: 0.85rem; color: #555; margin-bottom: 1.5rem; line-height: 1.6; }
+  .price-card.featured .price-desc { color: #aaa; }
+  .price-features { list-style: none; font-size: 0.85rem; }
+  .price-features li { padding: 0.4rem 0; display: flex; gap: 0.5rem; }
+  .price-features li::before { content: '–'; color: var(--teal-dark); flex-shrink: 0; }
+  .price-card.featured .price-features li::before { color: var(--teal); }
+  .price-cta { display: block; text-align: center; margin-top: 2rem; padding: 0.75rem; font-size: 0.85rem; font-weight: 500; text-decoration: none; border-radius: 2px; transition: all 0.2s; cursor: pointer; }
+  .price-cta-outline { border: 1px solid var(--gray-light); color: var(--black); }
+  .price-cta-outline:hover { border-color: var(--black); }
+  .price-cta-solid { background: var(--teal); color: var(--black); border: 1px solid var(--teal); }
+  .price-cta-solid:hover { background: var(--teal-dark); color: var(--white); }
+  .featured-badge { position: absolute; top: -1px; left: 50%; transform: translateX(-50%); background: var(--teal); color: var(--black); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.25rem 0.8rem; border-radius: 0 0 4px 4px; font-weight: 500; }
+
+  /* ── TESTIMONIALS ── */
+  .testimonials { background: var(--off-white); }
+  .testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
+  .testimonial-card { background: var(--white); border: 1px solid var(--gray-light); border-radius: 4px; padding: 2rem; }
+  .quote-mark { font-family: 'DM Serif Display', serif; font-size: 4rem; line-height: 0.5; color: var(--teal); margin-bottom: 1rem; display: block; }
+  .testimonial-text { font-size: 0.92rem; line-height: 1.8; color: #333; margin-bottom: 1.5rem; }
+  .testimonial-author { font-size: 0.8rem; font-weight: 500; letter-spacing: 0.05em; }
+  .testimonial-role { font-size: 0.75rem; color: var(--gray-mid); margin-top: 0.2rem; }
+
+  /* ── FAQ ── */
+  .faq-list { margin-top: 3rem; }
+  .faq-item { border-top: 1px solid var(--gray-light); padding: 1.5rem 0; cursor: pointer; }
+  .faq-item:last-child { border-bottom: 1px solid var(--gray-light); }
+  .faq-q { display: flex; justify-content: space-between; align-items: center; font-weight: 500; font-size: 0.95rem; gap: 1rem; }
+  .faq-toggle { width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--gray-light); display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; transition: all 0.2s; }
+  .faq-item.open .faq-toggle { background: var(--black); color: var(--white); border-color: var(--black); }
+  .faq-a { display: none; padding-top: 0.8rem; font-size: 0.88rem; color: #555; line-height: 1.8; max-width: 680px; }
+  .faq-item.open .faq-a { display: block; }
+
+  /* ── FOOTER ── */
+  footer { background: var(--black); color: var(--white); padding: 4rem 5vw 2rem; }
+  .footer-top { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem; }
+  .footer-logo { font-family: 'DM Serif Display', serif; font-size: 1.8rem; letter-spacing: -0.03em; margin-bottom: 0.8rem; }
+  .footer-logo span { color: var(--teal); }
+  .footer-tagline { font-size: 0.85rem; color: #888; line-height: 1.6; }
+  .footer-col h4 { font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gray-mid); margin-bottom: 1.2rem; }
+  .footer-col ul { list-style: none; }
+  .footer-col ul li { margin-bottom: 0.6rem; }
+  .footer-col ul li a { color: #bbb; text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
+  .footer-col ul li a:hover { color: var(--teal); }
+  .footer-bottom { border-top: 1px solid #222; padding-top: 1.5rem; display: flex; justify-content: space-between; font-size: 0.78rem; color: #555; }
+  .zoom-badge { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.78rem; color: #888; border: 1px solid #333; padding: 0.3rem 0.7rem; border-radius: 2px; }
+  .zoom-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); }
+
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; min-height: auto; }
+    .hero-text { border-right: none; border-bottom: 1px solid var(--gray-light); }
+    .how-grid, .pricing-grid, .testimonials-grid { grid-template-columns: 1fr; }
+    .how-item { border-right: none; border-bottom: 1px solid var(--gray-light); }
+    .calendar-layout { grid-template-columns: 1fr; }
+    .footer-top { grid-template-columns: 1fr; gap: 2rem; }
+    .footer-bottom { flex-direction: column; gap: 0.5rem; }
+    nav ul { display: none; }
+  }
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  .hero-text > * { animation: fadeInUp 0.6s ease both; }
+  .hero-eyebrow { animation-delay: 0.1s; }
+  h1 { animation-delay: 0.2s; }
+  .hero-sub { animation-delay: 0.3s; }
+  .hero-actions { animation-delay: 0.4s; }
+</style>
+</head>
+<body>
+
+<!-- LANG BAR -->
+<div class="lang-bar">
+  <span class="lang-label" id="lang-label-text">Sprache</span>
+  <button class="lang-btn active" id="btn-de" onclick="setLang('de')">DE</button>
+  <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Deutsch<span>Ohr</span></div>
+  <ul>
+    <li><a href="#konzept" data-i18n="nav_konzept"></a></li>
+    <li><a href="#buchen" data-i18n="nav_sessions"></a></li>
+    <li><a href="#preise" data-i18n="nav_preise"></a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="#buchen" class="nav-cta" data-i18n="nav_cta"></a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-text">
+    <p class="hero-eyebrow" data-i18n="hero_eyebrow"></p>
+    <h1 data-i18n="hero_h1"></h1>
+    <p class="hero-sub" data-i18n="hero_sub"></p>
+    <div class="hero-actions">
+      <a href="#buchen" class="btn-primary" data-i18n="hero_cta1"></a>
+      <button class="btn-ghost" onclick="document.getElementById('konzept').scrollIntoView({behavior:'smooth'})" data-i18n="hero_cta2"></button>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="time-badge"><span class="dot"></span><span data-i18n="badge_live"></span></div>
+    <div class="session-card">
+      <div class="session-time">8:00</div>
+      <div class="session-label" data-i18n="session_label"></div>
+      <div class="session-days" id="day-chips"></div>
+    </div>
+    <div class="devices-row">
+      <div class="device-item"><div class="device-icon">📱</div><span data-i18n="device_mobile"></span></div>
+      <div class="device-item"><div class="device-icon">💻</div><span data-i18n="device_home"></span></div>
+      <div class="device-item"><div class="device-icon">🖥️</div><span data-i18n="device_office"></span></div>
+    </div>
+    <p style="font-size:0.8rem;color:var(--gray-mid);font-style:italic;margin-top:0.5rem;" data-i18n="hero_quote"></p>
+  </div>
+</div>
+
+<!-- MARQUEE -->
+<div class="marquee-strip"><div class="marquee-inner" id="marquee-inner"></div></div>
+
+<!-- KONZEPT -->
+<section id="konzept">
+  <p class="section-label" data-i18n="konzept_label"></p>
+  <h2 data-i18n="konzept_h2"></h2>
+  <p style="max-width:560px;color:#555;font-size:1rem;line-height:1.8;" data-i18n="konzept_body"></p>
+  <div class="how-grid">
+    <div class="how-item"><div class="how-num">01</div><h3 data-i18n="how1_h"></h3><p data-i18n="how1_p"></p></div>
+    <div class="how-item"><div class="how-num">02</div><h3 data-i18n="how2_h"></h3><p data-i18n="how2_p"></p></div>
+    <div class="how-item"><div class="how-num">03</div><h3 data-i18n="how3_h"></h3><p data-i18n="how3_p"></p></div>
+  </div>
+</section>
+
+<!-- BUCHEN -->
+<section id="buchen">
+  <p class="section-label" data-i18n="book_label"></p>
+  <h2 data-i18n="book_h2"></h2>
+  <div class="calendar-layout">
+    <div>
+      <div class="cal-wrapper">
+        <div class="cal-header">
+          <button class="cal-nav-btn" onclick="changeMonth(-1)">&#8592;</button>
+          <span class="cal-month-label" id="cal-title"></span>
+          <button class="cal-nav-btn" onclick="changeMonth(1)">&#8594;</button>
+        </div>
+        <div class="cal-grid">
+          <div class="cal-weekdays" id="cal-weekdays"></div>
+          <div class="cal-days" id="cal-days"></div>
+        </div>
+      </div>
+      <div class="timeslots" id="timeslots" style="display:none">
+        <div class="timeslots-header" id="ts-header"></div>
+        <div class="slot-item" onclick="selectSlot(this,'08:00','08:30')">
+          <div>
+            <div class="slot-time">08:00 – 08:30</div>
+            <div class="slot-duration" data-i18n="slot_duration"></div>
+          </div>
+          <div class="slot-price">CHF 15.–</div>
+        </div>
+      </div>
+    </div>
+    <div class="booking-sidebar">
+      <div class="booking-box">
+        <h3 data-i18n="booking_title"></h3>
+        <div class="packages-row">
+          <label class="pkg-option selected" id="pkg1">
+            <input type="radio" name="pkg" value="single" checked onchange="selectPkg(0)">
+            <div class="pkg-label" data-i18n="pkg1_label"></div>
+            <div class="pkg-price">CHF 15.–</div>
+          </label>
+          <label class="pkg-option" id="pkg2">
+            <input type="radio" name="pkg" value="5" onchange="selectPkg(1)">
+            <div class="pkg-label" data-i18n="pkg2_label"></div>
+            <div class="pkg-price">CHF 65.–</div>
+          </label>
+          <label class="pkg-option" id="pkg3">
+            <input type="radio" name="pkg" value="20">
+            <div class="pkg-label"><span data-i18n="pkg3_label"></span> <span class="pkg-badge" data-i18n="pkg_badge"></span></div>
+            <div class="pkg-price">CHF 200.–</div>
+          </label>
+        </div>
+        <div class="booking-summary"><div id="booking-detail"></div></div>
+        <button class="btn-primary" style="width:100%;text-align:center;display:block;padding:1rem;" onclick="handleBooking()" data-i18n="booking_cta"></button>
+        <div class="zoom-badge" style="margin-top:1rem;justify-content:center;width:100%;">
+          <span class="zoom-dot"></span><span data-i18n="zoom_label"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PREISE -->
+<section id="preise">
+  <p class="section-label" data-i18n="price_label"></p>
+  <h2 data-i18n="price_h2"></h2>
+  <div class="pricing-grid">
+    <div class="price-card">
+      <div class="price-name" data-i18n="pkg1_label"></div>
+      <div class="price-tag">15.–</div>
+      <div class="price-period" data-i18n="price1_period"></div>
+      <p class="price-desc" style="margin-top:1rem;" data-i18n="price1_desc"></p>
+      <ul class="price-features">
+        <li data-i18n="price1_f1"></li><li data-i18n="price1_f2"></li><li data-i18n="price1_f3"></li>
+      </ul>
+      <a class="price-cta price-cta-outline" href="#buchen" data-i18n="price1_cta"></a>
+    </div>
+    <div class="price-card featured">
+      <div class="featured-badge" data-i18n="featured_badge"></div>
+      <div class="price-name" data-i18n="pkg3_label"></div>
+      <div class="price-tag">200.–</div>
+      <div class="price-period" data-i18n="price3_period"></div>
+      <p class="price-desc" style="margin-top:1rem;" data-i18n="price3_desc"></p>
+      <ul class="price-features">
+        <li data-i18n="price3_f1"></li><li data-i18n="price3_f2"></li><li data-i18n="price3_f3"></li><li data-i18n="price3_f4"></li>
+      </ul>
+      <a class="price-cta price-cta-solid" href="#buchen" data-i18n="price3_cta"></a>
+    </div>
+    <div class="price-card">
+      <div class="price-name" data-i18n="pkg2_label"></div>
+      <div class="price-tag">65.–</div>
+      <div class="price-period" data-i18n="price2_period"></div>
+      <p class="price-desc" style="margin-top:1rem;" data-i18n="price2_desc"></p>
+      <ul class="price-features">
+        <li data-i18n="price2_f1"></li><li data-i18n="price2_f2"></li><li data-i18n="price2_f3"></li>
+      </ul>
+      <a class="price-cta price-cta-outline" href="#buchen" data-i18n="price2_cta"></a>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <p class="section-label" data-i18n="testi_label"></p>
+  <h2 data-i18n="testi_h2"></h2>
+  <div class="testimonials-grid">
+    <div class="testimonial-card"><span class="quote-mark">"</span><p class="testimonial-text" data-i18n="testi1_text"></p><div class="testimonial-author">Mei-Lin C.</div><div class="testimonial-role" data-i18n="testi1_role"></div></div>
+    <div class="testimonial-card"><span class="quote-mark">"</span><p class="testimonial-text" data-i18n="testi2_text"></p><div class="testimonial-author">Tariq B.</div><div class="testimonial-role" data-i18n="testi2_role"></div></div>
+    <div class="testimonial-card"><span class="quote-mark">"</span><p class="testimonial-text" data-i18n="testi3_text"></p><div class="testimonial-author">Priya N.</div><div class="testimonial-role" data-i18n="testi3_role"></div></div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <p class="section-label" data-i18n="faq_label"></p>
+  <h2 data-i18n="faq_h2"></h2>
+  <div class="faq-list" id="faq-list"></div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-logo">Deutsch<span>Ohr</span></div>
+      <p class="footer-tagline" id="footer-tagline"></p>
+    </div>
+    <div class="footer-col">
+      <h4 data-i18n="footer_nav_title"></h4>
+      <ul>
+        <li><a href="#konzept" data-i18n="nav_konzept"></a></li>
+        <li><a href="#buchen" data-i18n="nav_sessions"></a></li>
+        <li><a href="#preise" data-i18n="nav_preise"></a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4 data-i18n="footer_legal_title"></h4>
+      <ul>
+        <li><a href="#" data-i18n="footer_impressum"></a></li>
+        <li><a href="#" data-i18n="footer_datenschutz"></a></li>
+        <li><a href="#" data-i18n="footer_agb"></a></li>
+        <li><a href="#" data-i18n="footer_kontakt"></a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 DeutschOhr</span>
+    <span data-i18n="footer_location"></span>
+  </div>
+</footer>
+
+<script>
+const T = {
+  de: {
+    nav_konzept:'Konzept', nav_sessions:'Sessions buchen', nav_preise:'Preise', nav_cta:'Jetzt buchen',
+    hero_eyebrow:'Täglich 30 Minuten · Mo–Fr · 8:00–8:30 Uhr',
+    hero_h1:'Hören. Verstehen. <em>Sprechen.</em>',
+    hero_sub:'Keine Grammatikregeln. Keine öden Übungen. Einfach täglich zuhören und mitdenken – und so ganz natürlich Wortschatz und Sprachgefühl aufbauen.',
+    hero_cta1:'Session auswählen', hero_cta2:'Mehr erfahren',
+    badge_live:'Live-Sessions täglich', session_label:'30 Minuten · Online · Zoom',
+    days:['Mo','Di','Mi','Do','Fr','Sa','So'], days_active:5,
+    device_mobile:'Unterwegs', device_home:'Zuhause', device_office:'Büro',
+    hero_quote:'„Steter Tropfen höhlt den Stein."',
+    marquee:['Hören','Verstehen','Sprechen','30 Minuten täglich','Mo–Fr · 8:00 Uhr','Online via Zoom','Von überall'],
+    konzept_label:'Das Konzept', konzept_h2:'Was Sprachschulen <em>nicht</em> bieten',
+    konzept_body:'Konventioneller Sprachunterricht fokussiert sich auf Grammatik und schriftliche Übungen. DeutschOhr setzt auf das Gegenteil: tägliches, entspanntes Hörverstehen – der natürlichste Weg, eine Sprache zu verinnerlichen.',
+    how1_h:'Termin auswählen', how1_p:'Wähle Einzeltermine oder ein Monatspaket. Bezahle sicher online per Karte oder TWINT.',
+    how2_h:'Zugangslink erhalten', how2_p:'Nach der Buchung erhältst du sofort den Zoom-Link per E-Mail. Kein Einloggen, kein Portal.',
+    how3_h:'Einfach zuhören', how3_p:'Um 8:00 Uhr einwählen – von unterwegs, zuhause oder vom Büro. 30 Minuten Deutsch, die sich nicht nach Lernen anfühlen.',
+    book_label:'Session buchen', book_h2:'Deinen Termin <em>wählen</em>',
+    slot_duration:'30 Minuten · Zoom', booking_title:'Deine Buchung',
+    pkg1_label:'Einzeltermin', pkg2_label:'5er-Paket', pkg3_label:'Monatspaket', pkg_badge:'Beliebt',
+    booking_cta:'Weiter zur Zahlung', zoom_label:'Session via Zoom',
+    booking_placeholder:'Wähle einen Termin im Kalender aus',
+    row_date:'Datum', row_time:'Zeit', row_pkg:'Paket', row_total:'Total', time_suffix:' Uhr',
+    alert_date:'Bitte wähle zuerst einen Termin aus.', alert_slot:'Bitte wähle eine Uhrzeit aus.',
+    alert_pay:'Weiterleitung zur sicheren Zahlung… (Demo)',
+    price_label:'Preise', price_h2:'Einfach und <em>transparent</em>', featured_badge:'Empfohlen',
+    price1_period:'CHF pro Session', price1_desc:'Ideal zum Ausprobieren oder für unregelmässige Teilnahme.',
+    price1_f1:'1 Session (30 Min.)', price1_f2:'Zoom-Link per E-Mail', price1_f3:'Kreditkarte / TWINT', price1_cta:'Einmalig buchen',
+    price2_period:'CHF · 5 Sessions', price2_desc:'Flexibel wie der Einzeltermin, aber mit besserem Preis.',
+    price2_f1:'5 Sessions frei wählbar', price2_f2:'CHF 13.– pro Session', price2_f3:'6 Monate gültig', price2_cta:'5er-Paket buchen',
+    price3_period:'CHF pro Monat · ~20 Sessions', price3_desc:'Für alle, die täglich dabei sein wollen. Deutlich günstiger als Einzeltermine.',
+    price3_f1:'Alle Werktags-Sessions', price3_f2:'CHF 10.– pro Session', price3_f3:'Priorität bei vollen Sessions', price3_f4:'Monatliche Fortschrittsnotiz', price3_cta:'Monatspaket buchen',
+    testi_label:'Stimmen', testi_h2:'Was Teilnehmende <em>sagen</em>',
+    testi1_text:'Ich pendele jeden Morgen und kann mich jetzt einfach einwählen. Nach drei Monaten verstehe ich Podcasts und TV-Sendungen viel besser.',
+    testi1_role:'Ingenieurin, Zürich',
+    testi2_text:'Endlich kein Grammatikheft mehr. Diese 30 Minuten morgens fühlen sich nicht nach Lernen an – aber der Effekt ist enorm.',
+    testi2_role:'Projektmanager, Basel',
+    testi3_text:'Ich habe Sprachkurse an drei verschiedenen Schulen gemacht. DeutschOhr ist das erste Angebot, bei dem ich wirklich dranbleibe.',
+    testi3_role:'Ärztin, Bern',
+    faq_label:'FAQ', faq_h2:'Häufige <em>Fragen</em>',
+    faqs:[
+      ['Was ist das genaue Format der Sessions?','Jede Session dauert genau 30 Minuten und findet via Zoom statt. Die Trainerin spricht auf Deutsch über aktuelle Themen, erzählt Geschichten oder bespricht Alltagssituationen. Die Teilnehmenden hören zu und reagieren mündlich – keine Hausaufgaben, keine Tests.'],
+      ['Welches Sprachniveau wird vorausgesetzt?','Die Sessions richten sich an Lernende ab Niveau A2/B1. Du solltest die Grundstrukturen des Deutschen bereits kennen. Für absolute Anfänger ist das Angebot (noch) nicht geeignet.'],
+      ['Wie erhalte ich den Zoom-Link?','Direkt nach der Buchung und Zahlung erhältst du eine Bestätigungs-E-Mail mit dem Zoom-Link. Der Link bleibt für alle gebuchten Sessions gleich – du musst ihn nur einmal speichern.'],
+      ['Was passiert, wenn ich eine Session verpasse?','Einzeltermine und 5er-Pakete können bis zu 24 Stunden vorher storniert und neu gebucht werden. Beim Monatspaket entfällt die verpasste Session leider – es gibt aber kein Verfallsdatum.'],
+      ['Wie viele Teilnehmende sind pro Session dabei?','Maximal 8 Personen pro Session, damit noch echte Interaktion möglich ist. Monatspaket-Inhaber haben Priorität bei der Buchung.'],
+      ['Welche Zahlungsmethoden werden akzeptiert?','Kreditkarte (Visa/Mastercard) sowie TWINT. Die Zahlung erfolgt über einen sicheren Anbieter – Kartendaten werden nicht bei uns gespeichert.']
+    ],
+    footer_tagline:'Täglich 30 Minuten Deutsch.\nKein Kurs. Kein Lehrbuch.\nNur hören, verstehen, sprechen.',
+    footer_nav_title:'Navigation', footer_legal_title:'Rechtliches',
+    footer_impressum:'Impressum', footer_datenschutz:'Datenschutz', footer_agb:'AGB', footer_kontakt:'Kontakt',
+    footer_location:'Zürich, Schweiz',
+    cal_months:['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'],
+    cal_wd:['Mo','Di','Mi','Do','Fr','Sa','So'],
+    lang_label:'Sprache', locale:'de-CH'
+  },
+  en: {
+    nav_konzept:'Concept', nav_sessions:'Book sessions', nav_preise:'Pricing', nav_cta:'Book now',
+    hero_eyebrow:'Daily 30 minutes · Mon–Fri · 8:00–8:30 am',
+    hero_h1:'Listen. Understand. <em>Speak.</em>',
+    hero_sub:'No grammar rules. No boring exercises. Just listen and engage every morning — and naturally build vocabulary and fluency over time.',
+    hero_cta1:'Choose a session', hero_cta2:'Learn more',
+    badge_live:'Live sessions daily', session_label:'30 minutes · Online · Zoom',
+    days:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'], days_active:5,
+    device_mobile:'On the go', device_home:'At home', device_office:'Office',
+    hero_quote:'"Constant dripping wears the stone."',
+    marquee:['Listen','Understand','Speak','30 minutes daily','Mon–Fri · 8:00 am','Online via Zoom','From anywhere'],
+    konzept_label:'The Concept', konzept_h2:'What language schools <em>don\'t</em> offer',
+    konzept_body:'Conventional language courses focus on grammar and written exercises. DeutschOhr does the opposite: daily, relaxed listening comprehension — the most natural way to internalise a language.',
+    how1_h:'Pick a date', how1_p:'Choose individual sessions or a monthly package. Pay securely online by card or TWINT.',
+    how2_h:'Receive your link', how2_p:'After booking you instantly receive the Zoom link by email. No login portal, no hassle.',
+    how3_h:'Just listen', how3_p:'Dial in at 8:00 am — on the go, at home, or from the office. 30 minutes of German that don\'t feel like studying.',
+    book_label:'Book a session', book_h2:'Choose your <em>date</em>',
+    slot_duration:'30 minutes · Zoom', booking_title:'Your booking',
+    pkg1_label:'Single session', pkg2_label:'5-session pack', pkg3_label:'Monthly plan', pkg_badge:'Popular',
+    booking_cta:'Proceed to payment', zoom_label:'Session via Zoom',
+    booking_placeholder:'Select a date in the calendar',
+    row_date:'Date', row_time:'Time', row_pkg:'Package', row_total:'Total', time_suffix:'',
+    alert_date:'Please select a date first.', alert_slot:'Please select a time slot.',
+    alert_pay:'Redirecting to secure payment… (Demo)',
+    price_label:'Pricing', price_h2:'Simple and <em>transparent</em>', featured_badge:'Recommended',
+    price1_period:'CHF per session', price1_desc:'Perfect for trying it out or attending occasionally.',
+    price1_f1:'1 session (30 min)', price1_f2:'Zoom link by email', price1_f3:'Credit card / TWINT', price1_cta:'Book once',
+    price2_period:'CHF · 5 sessions', price2_desc:'As flexible as single sessions, but at a better price.',
+    price2_f1:'5 sessions, freely schedulable', price2_f2:'CHF 13.– per session', price2_f3:'Valid for 6 months', price2_cta:'Buy 5-pack',
+    price3_period:'CHF per month · ~20 sessions', price3_desc:'For those who want to show up every day. Significantly cheaper per session.',
+    price3_f1:'All weekday sessions', price3_f2:'CHF 10.– per session', price3_f3:'Priority in full sessions', price3_f4:'Monthly progress note', price3_cta:'Buy monthly plan',
+    testi_label:'Testimonials', testi_h2:'What participants <em>say</em>',
+    testi1_text:'I commute every morning and can now just dial in. After three months I understand podcasts and TV shows much better.',
+    testi1_role:'Engineer, Zurich',
+    testi2_text:'Finally no more grammar books. These 30 morning minutes don\'t feel like studying — but the effect is huge.',
+    testi2_role:'Project manager, Basel',
+    testi3_text:'I\'ve taken language courses at three different schools. DeutschOhr is the first offering I actually stick with.',
+    testi3_role:'Physician, Bern',
+    faq_label:'FAQ', faq_h2:'Frequently asked <em>questions</em>',
+    faqs:[
+      ['What is the exact format of the sessions?','Each session lasts exactly 30 minutes and takes place via Zoom. The trainer speaks German about current topics, tells stories, or discusses everyday situations. Participants listen and respond verbally — no homework, no tests.'],
+      ['What language level is required?','Sessions are aimed at learners from level A2/B1 upwards. You should already be familiar with basic German structures. For complete beginners the offering is not yet suitable.'],
+      ['How do I receive the Zoom link?','Immediately after booking and payment you receive a confirmation email with the Zoom link. The link stays the same for all booked sessions — you only need to save it once.'],
+      ['What happens if I miss a session?','Single sessions and 5-packs can be cancelled and re-booked up to 24 hours in advance. For the monthly plan, missed sessions unfortunately lapse — but there is no expiry date on the plan itself.'],
+      ['How many participants are in each session?','A maximum of 8 people per session to ensure real interaction. Monthly plan holders have booking priority.'],
+      ['Which payment methods are accepted?','Credit card (Visa/Mastercard) and TWINT. Payment is processed through a secure provider — card details are never stored with us.']
+    ],
+    footer_tagline:'30 minutes of German every day.\nNo course. No textbook.\nJust listen, understand, speak.',
+    footer_nav_title:'Navigation', footer_legal_title:'Legal',
+    footer_impressum:'Imprint', footer_datenschutz:'Privacy policy', footer_agb:'Terms', footer_kontakt:'Contact',
+    footer_location:'Zurich, Switzerland',
+    cal_months:['January','February','March','April','May','June','July','August','September','October','November','December'],
+    cal_wd:['Mo','Tu','We','Th','Fr','Sa','Su'],
+    lang_label:'Language', locale:'en-GB'
+  }
+};
+
+let lang = 'de';
+let currentDate = new Date();
+let selectedDate = null;
+let selectedSlotEl = null;
+const today = new Date();
+let selectedPkg = 0;
+
+const pkgPrices = ['CHF 15.–','CHF 65.–','CHF 200.–'];
+
+function setLang(l) {
+  lang = l;
+  document.documentElement.lang = l;
+  document.getElementById('btn-de').classList.toggle('active', l==='de');
+  document.getElementById('btn-en').classList.toggle('active', l==='en');
+  applyAll();
+}
+
+function applyAll() {
+  const tr = T[lang];
+  // data-i18n elements
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.getAttribute('data-i18n');
+    if (tr[k] !== undefined) el.innerHTML = tr[k];
+  });
+  // lang label
+  document.getElementById('lang-label-text').textContent = tr.lang_label;
+  // footer tagline
+  document.getElementById('footer-tagline').innerHTML = tr.footer_tagline.replace(/\n/g,'<br>');
+  // day chips
+  const dc = document.getElementById('day-chips');
+  dc.innerHTML = tr.days.map((d,i) => `<span class="day-chip${i<tr.days_active?' active':''}">${d}</span>`).join('');
+  // marquee
+  let html = '';
+  for (let r=0;r<2;r++) tr.marquee.forEach(w => { html+=`<span>${w}</span><span class="teal">✦</span>`; });
+  document.getElementById('marquee-inner').innerHTML = html;
+  // faqs
+  const fl = document.getElementById('faq-list');
+  fl.innerHTML = '';
+  tr.faqs.forEach(([q,a]) => {
+    const el = document.createElement('div');
+    el.className = 'faq-item';
+    el.innerHTML = `<div class="faq-q">${q}<span class="faq-toggle">+</span></div><div class="faq-a">${a}</div>`;
+    el.addEventListener('click', () => {
+      el.classList.toggle('open');
+      el.querySelector('.faq-toggle').textContent = el.classList.contains('open') ? '×' : '+';
+    });
+    fl.appendChild(el);
+  });
+  // calendar
+  renderWeekdays();
+  renderCalendar();
+  updateBookingSummary();
+}
+
+function renderWeekdays() {
+  document.getElementById('cal-weekdays').innerHTML = T[lang].cal_wd.map(d=>`<span>${d}</span>`).join('');
+}
+
+function renderCalendar() {
+  const tr = T[lang];
+  const y = currentDate.getFullYear(), m = currentDate.getMonth();
+  document.getElementById('cal-title').textContent = tr.cal_months[m] + ' ' + y;
+  const firstDay = new Date(y,m,1).getDay();
+  const offset = firstDay===0 ? 6 : firstDay-1;
+  const dim = new Date(y,m+1,0).getDate();
+  const c = document.getElementById('cal-days');
+  c.innerHTML = '';
+  for (let i=0;i<offset;i++) { const e=document.createElement('div'); e.className='cal-day empty'; c.appendChild(e); }
+  for (let d=1;d<=dim;d++) {
+    const e = document.createElement('div');
+    const date = new Date(y,m,d);
+    const isPast = date < new Date(today.getFullYear(),today.getMonth(),today.getDate());
+    const isToday = d===today.getDate()&&m===today.getMonth()&&y===today.getFullYear();
+    const isWE = date.getDay()===0||date.getDay()===6;
+    e.className = isPast?'cal-day past':isWE?'cal-day weekend':'cal-day available';
+    if (isToday) e.classList.add('today');
+    if (selectedDate&&date.toDateString()===selectedDate.toDateString()) e.classList.add('selected');
+    e.textContent = d;
+    if (!isPast&&!isWE) e.addEventListener('click',()=>selectDate(date,e));
+    c.appendChild(e);
+  }
+}
+
+function selectDate(date, el) {
+  selectedDate = date;
+  document.querySelectorAll('.cal-day.selected').forEach(e=>e.classList.remove('selected'));
+  el.classList.add('selected');
+  const loc = T[lang].locale;
+  document.getElementById('ts-header').textContent = date.toLocaleDateString(loc,{weekday:'long',day:'numeric',month:'long'});
+  document.getElementById('timeslots').style.display = 'block';
+  selectedSlotEl = null;
+  document.querySelectorAll('.slot-item').forEach(s=>s.classList.remove('selected-slot'));
+  updateBookingSummary();
+}
+
+function changeMonth(dir) {
+  currentDate.setMonth(currentDate.getMonth()+dir);
+  if (currentDate < new Date(today.getFullYear(),today.getMonth(),1)) currentDate = new Date(today.getFullYear(),today.getMonth(),1);
+  renderCalendar();
+}
+
+function selectSlot(el,from,to) {
+  document.querySelectorAll('.slot-item').forEach(s=>s.classList.remove('selected-slot'));
+  el.classList.add('selected-slot');
+  selectedSlotEl = {from,to};
+  updateBookingSummary();
+}
+
+function selectPkg(idx) {
+  selectedPkg = idx;
+  document.querySelectorAll('.pkg-option').forEach((el,i)=>el.classList.toggle('selected',i===idx));
+  updateBookingSummary();
+}
+
+function updateBookingSummary() {
+  const detail = document.getElementById('booking-detail');
+  const tr = T[lang];
+  if (!selectedDate) {
+    detail.innerHTML = `<div class="booking-placeholder"><div class="arrow">↖</div><p>${tr.booking_placeholder}</p></div>`;
+    return;
+  }
+  const loc = tr.locale;
+  const dateStr = selectedDate.toLocaleDateString(loc,{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+  const suf = tr.time_suffix;
+  const timeStr = selectedSlotEl ? selectedSlotEl.from+' – '+selectedSlotEl.to+suf : '—';
+  const pkgLabels = [tr.pkg1_label, tr.pkg2_label, tr.pkg3_label];
+  detail.innerHTML = `
+    <div class="booking-row"><span class="label">${tr.row_date}</span><span>${dateStr}</span></div>
+    <div class="booking-row"><span class="label">${tr.row_time}</span><span>${timeStr}</span></div>
+    <div class="booking-row"><span class="label">${tr.row_pkg}</span><span>${pkgLabels[selectedPkg]}</span></div>
+    <div class="booking-row total"><span>${tr.row_total}</span><span>${pkgPrices[selectedPkg]}</span></div>
+  `;
+}
+
+function handleBooking() {
+  const tr = T[lang];
+  if (!selectedDate) { alert(tr.alert_date); return; }
+  if (!selectedSlotEl) { alert(tr.alert_slot); return; }
+  alert(tr.alert_pay);
+}
+
+// INIT
+applyAll();
+document.querySelectorAll('.pkg-option').forEach((el,i)=>el.addEventListener('click',()=>selectPkg(i)));
+</script>
+</body>
+</html>
